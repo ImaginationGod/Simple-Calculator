@@ -1,0 +1,165 @@
+<!-- Calculator (with eval())-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Calculator</title>
+    <style>
+        /*Font*/
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+        .poppins-regular{
+            font-family: "Poppins", serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+        /*Controls*/
+        .container{
+            display: grid;
+            align-items: center;
+            justify-content: center;
+            background-color: rgb(245, 245, 245);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            padding-left: 20px;
+            padding-right: 20px;
+            border-radius: 10px;
+            border: 3px solid #343434;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.1);
+        }
+        .btn_row{
+            display: flexbox;
+        }
+        .last_row{
+            margin-bottom: 20px;
+        }
+        /* From Uiverse.io by Praashoo7 */ 
+        .input{
+            font-size: large;
+            font-weight: bold;
+            border: none;
+            outline: none;
+            border-radius: 15px;
+            padding: 1em;
+            background-color: #e2e2e2;
+            border: 3px solid #343434;
+            box-shadow: inset 2px 5px 10px rgba(0,0,0,0.3);
+        }
+        /* Button */
+        button {
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-align: center;
+            font-weight: bold;
+            padding: 0.7em 2em;
+            border: 3px solid #4c4c4c;
+            border-radius: 6px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.1);
+            color: #343434;
+            text-decoration: none;
+            width: 91.33px; /* For each button to be of same width */
+        }
+        button:hover{
+            color: rgb(0, 0, 0);
+            background-color: #cbcbcb;
+            cursor: pointer;
+        }
+        .operator{
+            color: rgb(255, 153, 0);
+        }
+        .operator:hover{
+            background-color: rgb(255, 153, 0);
+            color: white;
+        }
+        .equal{
+            background-color: orange;
+        }
+        .equal:hover{
+            background-color: rgb(255, 98, 0);
+            color: white;
+        }
+        .extra{
+            background-color: aquamarine;
+        }
+        .extra:hover{
+            background-color: aqua;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="con">
+        <h2 class="poppins-regular"><b>Calculator</b></h2>
+        <input type="text" class="input poppins-regular" id="result" disabled><br>
+        <div class="btn_row">
+            <button type="button" id="clr" class="operator" onclick="clear_inp()">AC</button>
+            <button type="button" id="del" class="operator" onclick="del()">Del</button>
+            <button type="button" id="%" class="operator" onclick="calculate(event)">%</button>
+            <button type="button" id="/" class="operator" onclick="calculate(event)">/</button>
+        </div>
+        <div class="btn_row">
+            <button type="button" id="7" onclick="calculate(event)">7</button>
+            <button type="button" id="8" onclick="calculate(event)">8</button>
+            <button type="button" id="9" onclick="calculate(event)">9</button>
+            <button type="button" id="*" class="operator" onclick="calculate(event)">X</button>
+        </div>
+        <div class="btn_row">
+            <button type="button" id="4" onclick="calculate(event)">4</button>
+            <button type="button" id="5" onclick="calculate(event)">5</button>
+            <button type="button" id="6" onclick="calculate(event)">6</button>
+            <button type="button" id="-" class="operator" onclick="calculate(event)">-</button>
+        </div>
+        <div class="btn_row">
+            <button type="button" id="1" onclick="calculate(event)">1</button>
+            <button type="button" id="2" onclick="calculate(event)">2</button>
+            <button type="button" id="3" onclick="calculate(event)">3</button>
+            <button type="button" id="+" class="operator" onclick="calculate(event)">+</button>
+        </div>
+        <div class="btn_row last_row">
+            <button type="button" id="S" onclick="extra()" class="extra">S</button>
+            <button type="button" id="0" onclick="calculate(event)">0</button>
+            <button type="button" id="." onclick="calculate(event)">.</button>
+            <button type="button" id="equal" onclick="calculate_res()" class="equal">=</button>
+        </div>
+    </div>
+    <script>
+        let inp = document.getElementById("result");
+        let final_value = "";
+
+        let calculate = (event)=>{
+            if(event.target.id=="%"){
+                final_value += "/100";              
+                let temp = final_value.replace("/100", "%");
+                inp.value = temp;
+            }
+            else{
+                final_value += event.target.id;
+                inp.value = final_value;
+            }
+        }
+        let calculate_res = ()=>{
+            let res = eval(final_value);
+            inp.value = res;
+            final_value = res;
+        }
+        let clear_inp = ()=>{
+            inp.value = "";
+            final_value = "";
+        }
+        let del = ()=>{
+            let len = inp.value.length;
+            inp.value = inp.value.slice(0,len-1);
+            final_value = inp.value;
+        }
+        let extra = ()=>{
+            //Extra set of options
+            //Use toggle() method
+            //Use display: none;
+        }
+    </script>
+</body>
+</html>
