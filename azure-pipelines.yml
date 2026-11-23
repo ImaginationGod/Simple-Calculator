@@ -18,11 +18,11 @@ steps:
       from html.parser import HTMLParser
       from pathlib import Path
 
-      file = Path("SimpleCalculator.html")
+      file = Path("index.html")
 
       # Check whether the file exists
       if not file.exists():
-          raise SystemExit("ERROR: SimpleCalculator.html not found")
+          raise SystemExit("ERROR: index.html not found")
 
       content = file.read_text(encoding="utf-8")
 
@@ -52,7 +52,7 @@ steps:
       if not content.strip():
           raise SystemExit("ERROR: HTML file is empty")
 
-      print("SUCCESS: SimpleCalculator.html passed validation!")
+      print("SUCCESS: index.html passed validation!")
       print("Found all required HTML elements.")
       PY
     displayName: 'Validate Calculator HTML'
@@ -61,7 +61,7 @@ steps:
   - task: CopyFiles@2
     inputs:
       SourceFolder: '$(Build.SourcesDirectory)'
-      Contents: 'SimpleCalculator.html'
+      Contents: 'index.html'
       TargetFolder: '$(Build.ArtifactStagingDirectory)/site'
     displayName: 'Prepare Build Artifact'
 
