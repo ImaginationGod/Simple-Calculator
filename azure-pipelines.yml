@@ -1,0 +1,74 @@
+# CI Pipeline for Simple Calculator
+
+trigger:
+  branches:
+    include:
+      - feature/azure-devops-ci
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+  # Step 1: Get source code from GitHub
+  - checkout: self
+
+  # Step 2: Validate the HTML file
+  - script: |
+      python3 - <<'PY'
+      from html.parser import HTMLParser
+      from pathlib import Path
+
+      file = Path("SimpleCalculator.html")
+
+      # Check whether the file exists
+      if not file.exists():
+          raise SystemExit("ERROR: SimpleCalculator.html not found")
+
+      content = file.read_text(encoding="utf-8")
+
+      # Basic HTML structure validation
+      class CalculatorValidator(HTMLParser):
+          def __init__(self):
+              super().__init__()
+              self.tags = set()
+
+          def handle_starttag(self, tag, attrs):
+              self.tags.add(tag)
+
+      parser = CalculatorValidator()
+      parser.feed(content)
+      parser.close()
+
+      required_tags = {"html", "head", "body", "title", "style", "script"}
+
+      missing_tags = required_tags - parser.tags
+
+      if missing_tags:
+          raise SystemExit(f"ERROR: Missing HTML tags: {missing_tags}")
+
+      if "<!DOCTYPE html>" not in content:
+          raise SystemExit("ERROR: HTML5 DOCTYPE is missing")
+
+      if not content.strip():
+          raise SystemExit("ERROR: HTML file is empty")
+
+      print("SUCCESS: SimpleCalculator.html passed validation!")
+      print("Found all required HTML elements.")
+      PY
+    displayName: 'Validate Calculator HTML'
+
+  # Step 3: Copy the website file to artifact staging
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: '$(Build.SourcesDirectory)'
+      Contents: 'SimpleCalculator.html'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)/site'
+    displayName: 'Prepare Build Artifact'
+
+  # Step 4: Publish the build artifact
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: '$(Build.ArtifactStagingDirectory)/site'
+      artifact: 'calculator-site'
+      publishLocation: 'pipeline'
+    displayName: 'Publish Calculator Artifact'
